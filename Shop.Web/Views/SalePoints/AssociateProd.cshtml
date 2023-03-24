@@ -1,0 +1,62 @@
+﻿@model List<Shop.Domain.Models.SalePointProductDTO>
+
+@{
+    ViewData["Title"] = "Associate Product";
+}
+
+<form asp-action="SaveAssociation" method="post">
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Select</th>
+            <th scope="col">Product</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">
+                    @if (item.Id != null)
+                    {
+                        <div class="form-check">
+                                <input class="form-check-input" spId="@item.SalePointId" type="checkbox" onchange="Save(this)" value="" id="@item.ProductId" checked />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check">
+                                <input class="form-check-input" spId="@item.SalePointId" type="checkbox" onchange="Save(this)" value="" id="@item.ProductId" />
+                        </div>
+                    }
+
+                </th>
+                <td>
+                    @item.ProductName
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    function Save(element) {
+        fetch('/SalePoints/SaveAssociation', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+            body: JSON.stringify({ selected: element.checked, productId: element.id, salePointId: element.getAttribute("spId") })
+    })    
+        .then(() => console.log("ok"))
+        .catch((error) => {
+            alert(error);
+        });
+}
+</script>
